@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Day 5 JavaScript practice with async login, product search, and a persistent shopping cart.">
+
+  <title>Day 5 Mini Store | Zeeshan Fida</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home">
+        <span class="brand-icon">Z.</span>
+        <span>Zeeshan<span class="accent">.</span></span>
+      </a>
+
+      <button class="menu-toggle" id="menu-toggle" type="button"
+        aria-label="Open navigation" aria-expanded="false"
+        aria-controls="main-navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="main-navigation" aria-label="Main navigation">
+        <a href="#async">Async Login</a>
+        <a href="#products">Products</a>
+        <a class="cart-link" href="#cart">
+          Cart <span id="cart-badge" class="cart-badge">0</span>
+        </a>
+        <span class="badge">DAY 05</span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="home">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">TECH SG STUDIO / DAY 05</p>
+        <h1>Fetch. Explore.<br><span>Add to your cart.</span></h1>
+        <p class="hero-description">
+          A mini store built to practice asynchronous JavaScript,
+          API requests, and shopping cart interactions.
+        </p>
+        <a class="button" href="#products">Explore products ↗</a>
+      </div>
+
+      <aside class="hero-card">
+        <p class="eyebrow">YOUR FINAL PRACTICE WORKSPACE</p>
+        <h2>Three ideas. One experience.</h2>
+
+        <div class="summary-row">
+          <span>01</span>
+          <div>
+            <strong>Async Basics</strong>
+            <p>Promises, async/await, try/catch</p>
+          </div>
+        </div>
+
+        <div class="summary-row">
+          <span>02</span>
+          <div>
+            <strong>Product Explorer</strong>
+            <p>API data, search, filters, sorting</p>
+          </div>
+        </div>
+
+        <div class="summary-row">
+          <span>03</span>
+          <div>
+            <strong>Mini Store Cart</strong>
+            <p>Quantities and saved cart data</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Task 1: Async Basics -->
+    <section class="workspace" id="async" aria-labelledby="async-title">
+      <div class="section-heading">
+        <span class="task-number">01</span>
+        <div>
+          <p class="eyebrow">ASYNC BASICS</p>
+          <h2 id="async-title">A small wait. A clear result.</h2>
+          <p>Simulate a login request that finishes after two seconds.</p>
+        </div>
+      </div>
+
+      <div class="login-layout">
+        <form id="login-form">
+          <label for="login-result">Simulated login result</label>
+          <select id="login-result">
+            <option value="success">Successful login</option>
+            <option value="failure">Failed login</option>
+          </select>
+
+          <button class="button" id="login-button" type="submit">
+            Start fake login →
+          </button>
+
+          <p class="message" id="login-message"
+            role="status" aria-live="polite">
+            Choose a result and start the simulation.
+          </p>
+        </form>
+
+        <aside class="info-panel">
+          <span class="badge">2-SECOND SIMULATION</span>
+          <h3>See asynchronous code in action.</h3>
+          <p>
+            The page shows “Logging in...” while a Promise waits.
+            After two seconds, the selected success or error result appears.
+          </p>
+          <p class="helper">
+            This is a fake login exercise. No real account or password is used.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Task 2: Products Page -->
+    <section class="workspace" id="products" aria-labelledby="products-title">
+      <div class="section-heading">
+        <span class="task-number">02</span>
+        <div>
+          <p class="eyebrow">PRODUCT EXPLORER</p>
+          <h2 id="products-title">Find something you like.</h2>
+          <p>Browse API products and add your favorites to the cart.</p>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div>
+          <label for="search-input">Search by title</label>
+          <input id="search-input" type="search"
+            placeholder="Search products..." maxlength="100">
+        </div>
+
+        <div>
+          <label for="category-filter">Category</label>
+          <select id="category-filter">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="price-sort">Sort by price</label>
+          <select id="price-sort">
+            <option value="default">Default order</option>
+            <option value="low">Low to high</option>
+            <option value="high">High to low</option>
+          </select>
+        </div>
+
+        <button class="button secondary" id="reset-filters" type="button">
+          Reset
+        </button>
+      </div>
+
+      <div class="catalog-toolbar">
+        <p id="product-count" role="status" aria-live="polite"></p>
+        <span class="helper">Sample prices displayed in USD</span>
+      </div>
+
+      <div class="state-panel" id="loading-state" role="status">
+        <span class="spinner" aria-hidden="true"></span>
+        <h3>Loading products...</h3>
+        <p>Fetching the catalog. Please wait.</p>
+      </div>
+
+      <div class="state-panel" id="error-state" hidden>
+        <h3>We could not load the catalog.</h3>
+        <p id="product-error" role="alert"></p>
+        <button class="button" id="retry-products" type="button">
+          Try again
+        </button>
+      </div>
+
+      <div class="state-panel" id="empty-products" hidden>
+        <h3>No products found.</h3>
+        <p>Try another search or reset your filters.</p>
+      </div>
+
+      <div class="product-grid" id="product-grid"
+        aria-busy="true"></div>
+
+      <p class="message" id="catalog-message"
+        role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- Task 3: Mini Store Cart -->
+    <section class="workspace" id="cart" aria-labelledby="cart-title">
+      <div class="section-heading">
+        <span class="task-number">03</span>
+        <div>
+          <p class="eyebrow">MINI STORE CART</p>
+          <h2 id="cart-title">Your picks, all together.</h2>
+          <p>Update quantities or remove items whenever you like.</p>
+        </div>
+      </div>
+
+      <div class="cart-layout">
+        <div>
+          <ul class="cart-list" id="cart-list"></ul>
+
+          <div class="state-panel" id="empty-cart">
+            <h3>Your cart is empty.</h3>
+            <p>Explore the products and add your first item.</p>
+            <a class="button secondary" href="#products">Browse products ↗</a>
+          </div>
+        </div>
+
+        <aside class="order-summary">
+          <p class="eyebrow">ORDER SUMMARY</p>
+          <h3>A quick overview.</h3>
+
+          <div class="summary-line">
+            <span>Different products</span>
+            <strong id="cart-types">0</strong>
+          </div>
+
+          <div class="summary-line">
+            <span>Total quantity</span>
+            <strong id="cart-quantity">0</strong>
+          </div>
+
+          <div class="summary-line total-line">
+            <span>Total price</span>
+            <strong id="cart-total">$0.00</strong>
+          </div>
+
+          <button class="button secondary" id="clear-cart"
+            type="button" disabled>Clear cart</button>
+
+          <p class="helper">
+            Your cart is saved in this browser. This practice store
+            does not process orders or payments.
+          </p>
+        </aside>
+      </div>
+
+      <p class="message" id="cart-message"
+        role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="brand" href="#home">
+          Zeeshan<span class="accent">.</span>
+        </a>
+        <p>Learning by building, one task at a time.</p>
+      </div>
+
+      <div>
+        <p>Tech SG Studio · Day 05</p>
+        <a href="#home">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
